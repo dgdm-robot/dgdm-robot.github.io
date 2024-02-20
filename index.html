@@ -7,18 +7,20 @@
 		<link rel="stylesheet" href="assets/css/main.css" />
 
 
+
 		<!-- Google tag (gtag.js) -->
-		<script async src="https://www.googletagmanager.com/gtag/js?id=G-V7ED0XPGVT"></script>
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-LBQD2S2SNQ"></script>
 		<script>
 		window.dataLayer = window.dataLayer || [];
 		function gtag(){dataLayer.push(arguments);}
 		gtag('js', new Date());
 
-		gtag('config', 'G-V7ED0XPGVT');
+		gtag('config', 'G-LBQD2S2SNQ');
 		</script>
 
 
-		<meta property="og:url"           content="https://dgdm.github.io" />
+
+		<meta property="og:url"           content="https://dgdm-robot.github.io" />
 	    <meta property="og:type"          content="website" />
 	    <meta property="og:title"         content="Dynamics-Guided Diffusion Model for Robot Manipulator Design" />
 	    <meta property="og:description"   content="We present Dynamics-Guided Diffusion Model, a data-driven framework for generating manipulator geometry designs for a given manipulation task. Instead of training different design models for each task, our approach employs a learned dynamics network shared across tasks. For a new manipulation task, we first decompose it into a collection of individual motion targets which we call target interaction profile, where each individual motion can be modeled by the shared dynamics network. The design objective constructed from the target and predicted interaction profiles provides a gradient to guide the refinement of finger geometry for the task. This refinement process is executed as a classifier-guided diffusion process, where the design objective acts as the classifier guidance. We evaluate our framework on various manipulation tasks, under the sensor-less setting using only an open-loop parallel jaw motion. Our generated designs outperform optimization-based and unguided diffusion baselines relatively by 31.5% and 45.3% on average manipulation success rate. With the ability to generate a design within 0.8 seconds, our framework could facilitate rapid design iteration and enhance the adoption of data-driven approaches for robotic mechanism design." />
