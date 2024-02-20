@@ -1,0 +1,240 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Dynamics-Guided Diffusion Model for Robot Manipulator Design</title>
+		<meta charset="utf-8" />
+		 <meta name="viewport" content="width=1000">
+		<link rel="stylesheet" href="assets/css/main.css" />
+
+		<!-- Google tag (gtag.js) -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-LS6L6LB7RX"></script>
+		<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-LS6L6LB7RX');
+		</script>
+
+		<meta property="og:url"           content="https://dgdm.github.io" />
+	    <meta property="og:type"          content="website" />
+	    <meta property="og:title"         content="Dynamics-Guided Diffusion Model for Robot Manipulator Design" />
+	    <meta property="og:description"   content="We present Dynamics-Guided Diffusion Model, a data-driven framework for generating manipulator geometry designs for a given manipulation task. Instead of training different design models for each task, our approach employs a learned dynamics network shared across tasks. For a new manipulation task, we first decompose it into a collection of individual motion targets which we call target interaction profile, where each individual motion can be modeled by the shared dynamics network. The design objective constructed from the target and predicted interaction profiles provides a gradient to guide the refinement of finger geometry for the task. This refinement process is executed as a classifier-guided diffusion process, where the design objective acts as the classifier guidance. We evaluate our framework on various manipulation tasks, under the sensor-less setting using only an open-loop parallel jaw motion. Our generated designs outperform optimization-based and unguided diffusion baselines relatively by 31.5% and 45.3% on average manipulation success rate. With the ability to generate a design within 0.8 seconds, our framework could facilitate rapid design iteration and enhance the adoption of data-driven approaches for robotic mechanism design." />
+	    
+
+	</head>
+	<body id="top">
+
+
+		<!-- Main -->
+			<div id="main" style="padding-bottom:1em; padding-top: 5em; width: 60em; max-width: 70em; margin-left: auto; margin-right: auto;">
+					<section id="four">
+                        <h1 style="text-align: center; margin-bottom: 0; color: #4e79a7; font-size: 200%">Dyanmics-Guided Diffusion Model <br>for Robot Manipulator Design</h1>
+
+						<!-- <div class="box alt" style="margin-bottom: 1em;">
+							<div class="row 50% uniform" style="width: 100%;">
+								<div class="2u" style="font-size: 1em; line-height: 1.5em; text-align: center; width: 33.33%">
+									<span class="image fit">
+										<video autoplay loop muted playsinline style="width: 100%; margin-right: 5%;">
+											<source src="videos/teaser_data_collection_dish.mp4" type="video/mp4">	
+										</video>
+									</span>
+								</div>
+
+								<div class="2u" style="font-size: 1em; line-height: 1.5em; text-align: center; width: 33.33%">
+									<span class="image fit">
+										<video autoplay loop muted playsinline style="width: 100%; margin-right: 5%;">
+											<source src="videos/task_dish_washing_1x_compressed.mp4" type="video/mp4">	
+										</video>
+										<div style="position: absolute; top: 2%; right: 1%">
+											<p style="color: white; text-align: center; font-size: 2em">1x</p>
+										</div>
+									</span>
+								</div>
+
+								<div class="2u" style="font-size: 1em; line-height: 1.5em; text-align: center; width: 33.33%">
+									<span class="image fit">
+										<video autoplay loop muted playsinline style="width: 100%; margin-right: 5%;">
+											<source src="videos/task_cloth_folding_1x_compressed.mp4" type="video/mp4">
+										</video>
+										<div style="position: absolute; top: 2%; right: 1%">
+											<p style="color: white; text-align: center; font-size: 2em">1x</p>
+										</div>
+									</span>
+								</div>
+							</div>
+							<div class="row 50% uniform" style="width: 100%">
+								<div class="2u" style="font-size: 1em; line-height: 1.5em; text-align: center; width: 33.33%">
+									<span class="image fit">
+										<video autoplay loop muted playsinline style="width: 100%; margin-right: 5%;">
+											<source src="videos/teaser_data_collection_cup.mp4" type="video/mp4">	
+										</video>
+									</span>
+								</div>
+								
+								<div class="2u" style="font-size: 1em; line-height: 1.5em; text-align: center; width: 33.33%">
+									<span class="image fit">
+										<video autoplay loop muted playsinline style="width: 100%; margin-right: 5%;">
+											<source src="videos/task_cup_arrangement_1x_compressed.mp4" type="video/mp4">
+										</video>
+										<div style="position: absolute; top: 2%; right: 1%">
+											<p style="color: white; text-align: center; font-size: 2em">1x</p>
+										</div>
+									</span>
+								</div>
+
+								<div class="2u" style="font-size: 1em; line-height: 1.5em; text-align: center; width: 33.33%">
+									<span class="image fit">
+										<video autoplay loop muted playsinline style="width: 100%; margin-right: 5%;">
+											<source src="videos/task_dynamic_tossing_1x_compressed.mp4" type="video/mp4">
+										</video>
+										<div style="position: absolute; top: 2%; right: 1%">
+											<p style="color: white; text-align: center; font-size: 2em">1x</p>
+										</div>
+									</span>
+								</div>
+							</div>
+							<div class="row 50% uniform" style="width: 100%; color: black;">
+								<div class="2u" style="font-size: 1em; line-height: 1.5em; text-align: center; width: 33.33%">
+									Shift Up
+								</div>
+								
+								<div class="2u" style="font-size: 1em; line-height: 1.5em; text-align: center; width: 33.33%">
+									Shift Down
+								</div>
+							</div>
+						</div> -->
+								
+
+						<p style="color: black;">We present Dynamics-Guided Diffusion Model, a data-driven framework for generating manipulator geometry designs for a given manipulation task. Instead of training different design models for each task, our approach employs a learned dynamics network shared across tasks. For a new manipulation task, we first decompose it into a collection of individual motion targets which we call target interaction profile, where each individual motion can be modeled by the shared dynamics network. The design objective constructed from the target and predicted interaction profiles provides a gradient to guide the refinement of finger geometry for the task. This refinement process is executed as a classifier-guided diffusion process, where the design objective acts as the classifier guidance. We evaluate our framework on various manipulation tasks, under the sensor-less setting using only an open-loop parallel jaw motion. Our generated designs outperform optimization-based and unguided diffusion baselines relatively by 31.5% and 45.3% on average manipulation success rate. With the ability to generate a design within 0.8 seconds, our framework could facilitate rapid design iteration and enhance the adoption of data-driven approaches for robotic mechanism design.
+						</p>
+		
+						<hr>
+						<h3>Paper</h3>
+						<p style="margin-bottom: 1em;">
+							Latest version: <a href="dgdm.pdf">here</a>.
+						</p>
+						<div class="12u$"><a href="dgdm.pdf"><span class="image fit" style="border: 1px solid; border-color: #888888;"><img src="images/dgdm_thumbnail.png" alt="" /></span></a></div>
+
+						
+						<!-- <h3>Code and Tutorial</h3>
+
+						<div class="box alt" style="margin-bottom: 1em;">
+							<div class="row 50% uniform" style="width: 100%;">
+								<div class="2u" style="font-size: 1em; line-height: 1.5em; text-align: center; width: 14.2%">
+									<a href="https://github.com/real-stanford/universal_manipulation_interface">
+										<span class="image fit" style="margin-bottom: 0.5em;">
+											<img src="images/github_logo.svg" alt=""/>
+										</span>
+										Codebase
+									</a>
+								</div>
+
+								<div class="2u" style="font-size: 1em; line-height: 1.5em; text-align: center; width: 14.2%">
+									<a href="https://docs.google.com/document/d/1TPYwV9sNVPAi0ZlAupDMkXZ4CA1hsZx7YDMSmcEy6EU/edit?usp=sharing">
+										<span class="image fit" style="margin-bottom: 0.5em;">
+											<img src="images/build.svg" alt=""/>
+										</span>
+										Hardware Guide
+									</a>
+								</div>
+
+								<div class="2u" style="font-size: 1em; line-height: 1.5em; text-align: center; width: 14.2%">
+									<a href="https://swanky-sphere-ad1.notion.site/UMI-Data-Collection-Tutorial-4db1a1f0f2aa4a2e84d9742720428b4c?pvs=4">
+										<span class="image fit" style="margin-bottom: 0.5em;">
+											<img src="images/documentation.svg" alt=""/>
+										</span>
+										Data Collection Instruction
+									</a>
+								</div>
+							</div>
+						</div> -->
+						
+						<hr>
+						<h3>Team</h3>
+						<section>
+							<div class="box alt" style="margin-bottom: 1em;">
+								<div class="row 50% uniform" style="width: 100%">
+									<div class="2u" style="font-size: 1em; line-height: 1.5em; text-align: center; width: 20%">
+										<a href="https://xxm19.github.io/"><span class="image fit" style="margin-bottom: 0.5em;">
+											<img src="images/xiaomeng_small.jpg" alt="" style="border-radius: 60%;" /></span>Xiaomeng Xu<sup>1</sup></a></div>
+									
+									<div class="2u" style="font-size: 1em; line-height: 1.5em; text-align: center; width: 20%">
+										<a href="https://www.cs.columbia.edu/~huy/"><span class="image fit" style="margin-bottom: 0.5em;">
+											<img src="images/huy_small.jpg" alt="" style="border-radius: 60%;" /></span>Huy Ha<sup>1,2</sup></a></div>
+									
+									<div class="2u" style="font-size: 1em; line-height: 1.5em; text-align: center; width: 20%"
+									><a href="https://shurans.github.io/"><span class="image fit" style="margin-bottom: 0.5em;">
+										<img src="images/shuran_small.jpg" alt="" style="border-radius: 60%;" /></span>Shuran Song<sup>1,2</sup></a></div>
+									
+								</div>
+							</div>
+						</section>
+						<p>
+							<sup>1</sup> Stanford University&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<sup>2</sup> Columbia University&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						</p>
+
+						<div class="row">
+							<div class="12u$ 12u$(xsmall)" style="text-align: center;">
+								<h3>Technical Summary Video (with audio)</h3>
+								<iframe id="match-video" width="640" height="360" style="margin-bottom: 2em; margin-left: auto; margin-right: auto; display:block;" src="" frameborder="0" allowfullscreen></iframe>
+							</div>
+						</div>
+					
+						<hr>
+						<h3>Real World Results</h3>
+						<b>Convergence</b>
+						<br>
+						The goal of convergence is to design fingers that always reorient a target object to a specified orientation when closing the gripper in parallel. In industrial settings, this task is useful because it funnels the objects from arbitrary poses to a small set of final poses, thereby simplifying downstream perception/planning.
+						<!-- <div class="row 50% uniform" style="width: 100%; margin-top: 0.5em;">
+							<div class="2u" style="font-size: 1em; line-height: 1.5em; text-align: center; width: 100%">
+								<span class="image fit">
+									<img src="images/UMI_hardware.jpg" alt="">
+								</span>
+							</div>
+						</div> -->
+						<br>
+
+						<b>Rotate Counterclockwise</b>
+						<br>
+
+						<b>Rotate Clockwise</b>
+						<br>
+
+						<b>Shift Up</b>
+						<br>
+
+						<b>Shift Down</b>
+						<br>
+
+						<b>Shift Left</b>
+						<br>
+
+						<b>Shift Right</b>
+						<br>
+
+						<h3>Multi-Object Results</h3>
+						<br>
+
+						<h3>BibTeX</h3>
+						<pre><code>
+
+                        </code></pre>
+						
+						<h3>Contact</h3>
+				        <p>If you have any questions, please feel free to contact <a href="https://xxm19.github.io/">Xiaomeng Xu</a>.</p>
+						
+					</section>
+
+					
+			</div>
+
+			<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.poptrox.min.js"></script>
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+	</body>
+</html>
